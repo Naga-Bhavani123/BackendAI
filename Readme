@@ -1,0 +1,3 @@
+This is the backend for the AI. 
+Used externel Api Gemini ai. For that I have login tot the Gemini ai studio and created the API KEY in the project Project AI. 
+I have created aA API to the Gemenine to get the response. 

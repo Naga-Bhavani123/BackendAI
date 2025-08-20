@@ -1,5 +1,5 @@
-const User = require("../Model/User.js")
-const {hash} = require("bcrypt") 
+import User from "../Model/User.js"
+import {hash} from "bcrypt"
 
 
 const registerUser = async (req, res) => {
@@ -12,7 +12,16 @@ const registerUser = async (req, res) => {
     res.send({msg: "User registered successfully"});
     
     }catch (error) {
+         if (error.code === 11000) {
+      // duplicate key error
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // validation errors (like missing fields)
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
         console.error("Error registering user:", error);        }
 }
 
-module.exports = registerUser;
+export default registerUser;

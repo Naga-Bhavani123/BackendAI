@@ -1,4 +1,4 @@
-const mongoose  = require('mongoose'); 
+import mongoose  from 'mongoose'; 
 
 const Schema = new mongoose.Schema({
     firstName: {
@@ -12,7 +12,9 @@ const Schema = new mongoose.Schema({
     email: {
         type: String, 
         required: true,
-        unique: true
+        unique: true, 
+        match: [/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "Only Gmail addresses are allowed"]
+
     }, 
     password: {
         type: String, 
@@ -21,4 +23,4 @@ const Schema = new mongoose.Schema({
 })
 
 const User = mongoose.model("User", Schema); 
-module.exports = User;
+export default User;
