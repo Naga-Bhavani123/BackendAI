@@ -5,7 +5,7 @@ import creatingFolderController from "../Controllers/creatingFolder.js"
 import gettingFoldersController from "../Controllers/gettingFolders.js" 
 
 import deletingFoldersController from "../Controllers/deletingFolders.js" 
-import queryController from "../Controllers/query.js"; 
+import queryController from "../Controllers/Query/query.js"; 
 import gettingEachFolderController from "../Controllers/gettingEachFolder.js"
 import deletingEachFolderController from "../Controllers/deletingEachFolder.js"
 

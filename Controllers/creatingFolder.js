@@ -4,6 +4,8 @@ const creatingFolderController = async (req, res) => {
 
     try{
         const {userId} = req
+        
+
         const {title} = req.body; 
         const folderIntence = await  new Folder({userId, title}); 
         const newFolderId = await folderIntence.save(); 

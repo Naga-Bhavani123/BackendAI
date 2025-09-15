@@ -7,7 +7,9 @@ const gettingFoldersController = async (req, res) => {
             const {userId} = req; 
             console.log(userId)
             const folders = await  Folder.find({userId}); 
+            console.log(folders)
             const modifiedData = folders.map((each) => ({title: each.title, _id: title._id, createdAt: moment(each.createdAt).tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss"), updatedAt: moment(each.updatedAt).tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss"), history: each.history}))
+            console.log(modifiedData)
             res.status(200); 
             res.send(modifiedData);
 
