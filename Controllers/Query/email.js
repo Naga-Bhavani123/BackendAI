@@ -23,10 +23,15 @@ const getAccessToken = async (refreshToken) => {
 const sendingEmail = async (UserInfo, sendingData) => {
          
            try{
-                         const {refreshToken} = UserInfo; 
-               const { from, to, message } = sendingData;
-              const token = await getAccessToken(refreshToken); 
+              // console.log(sendingData)
+              const {refreshToken, email} = UserInfo; 
+              const { from, to, message, subject } = sendingData;
+              const freshAccessToken = await getAccessToken(refreshToken); 
               
+              //  const oauth2 = google.oauth2({ version: "v2", auth: oAuth2Client }); 
+              // const { data } = await oauth2.userinfo.get(); // checking weather the user is authorized or not
+              // console.log("Google User Info:", data);
+              // console.log(data.email)
               const transporter = nodemailer.createTransport({
                     service: "gmail",
                     auth: {
@@ -35,15 +40,14 @@ const sendingEmail = async (UserInfo, sendingData) => {
                         clientId: process.env.GOOGLE_CLIENT_ID,
                         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                         refreshToken,
-                        accessToken:token, // fresh access token
+                        accessToken:freshAccessToken, // fresh access token
                     },
                });  // creating the transporter from which email we want to the email. THis enr=trie thing is from data through nodemailer
+                  const mailOptions = { from, to, subject, text: message };  // creating an email oprtions
 
-    const mailOptions = { from, to, text: message };  // creating an email oprtions
-
-    const result = await transporter.sendMail(mailOptions); // transoprter will generate the sendMail method it will take to whom you wan to send the mail
-    console.log("✅ Email sent:", result.messageId);
-    return result;
+                  const result = await transporter.sendMail(mailOptions); // transoprter will generate the sendMail method it will take to whom you wan to send the mail
+                  console.log("✅ Email sent:", result.messageId);
+                  return result;
 
            }catch(error){
             console.log(error)

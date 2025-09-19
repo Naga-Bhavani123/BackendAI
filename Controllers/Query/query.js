@@ -17,12 +17,14 @@ Base responses on the past conversation history.
 
 If the user explicitly asks to send an email, respond with only one valid JSON object (no extra text).
 The JSON format must be exactly:
-{"action":"send_email","to":"<email>","message":"<text>","from":"<email>"}
+{"action":"send_email","to":"<email>","message":"<text>","from":"<email>, "subject": <subject>}
 Do not return anything else when generating the email JSON.
 If any field is missing, ask for the missing info in normal text (not JSON).
 If recipient is missing → “What is the recipient’s email address?”
-If sender is missing → “What email should I send it from?”
+If sender is missing → “Wnd subject checkinghat email should I send it from?”
 If message is missing → “What is the message you want to send?”
+If subject is missing → “What is the Subject you want to send?”
+
 Validation rule: "from" and "to" must not be the same.`
 
 const GeminiApi = async (query, conversationHistory) => {
@@ -33,8 +35,8 @@ const GeminiApi = async (query, conversationHistory) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       contents: [{ parts: [{ text: `${responseRules},
-        previous conversation ${conversationHistory},
-Now user asks:${query}`}] }],
+                previous conversation ${conversationHistory},
+                Now user asks:${query}`}] }],
     }),
   }
 );
@@ -54,7 +56,7 @@ const queryController = async (req, res) => {
         const previous = await Folder.findById(id); // geeting the previous history of the folder
 
         let conversationHistory = previous.history.map((his) => { 
-          const regex = /From\s+(\S+)\s+to\s+(\S+)\s+with message\s+(.+)/i;   // I am storing every =thing as string in the history so When I gave to the gemini it was not returning the JSON object. So when it come's email I have used regex to make the previous data to the json object
+          const regex = /From\s+(\S+)\s+to\s+(\S+)\s+with subject\s+(.+?)\s+and message\s+(.+)/i;   // I am storing every =thing as string in the history so When I gave to the gemini it was not returning the JSON object. So when it come's email I have used regex to make the previous data to the json object
           const match = his.response.match(regex);
 
           let req = his.request;
@@ -65,11 +67,11 @@ const queryController = async (req, res) => {
             const result = JSON.stringify({
               from: match[1].trim(),
               to: match[2].trim(),
-              message: match[3].trim()
+              message: match[4].trim(), 
+              subject: match[3].trim()
             });
 
             res = result
-
 
           }
 
@@ -78,9 +80,8 @@ const queryController = async (req, res) => {
           return `User: ${req}\nAssistant: ${res}`
 
     });  // making prevoius history as string too give the previous con for the gemini ai
-       conversationHistory.join("\n")
+        conversationHistory.join("\n")
         let Geminidata = await GeminiApi(query, conversationHistory) // getting response from then
-
         Geminidata = await Geminidata.json()
 
         let answer = Geminidata.candidates[0].content.parts[0].text; 
@@ -88,20 +89,17 @@ const queryController = async (req, res) => {
         
         try{ 
           // if returned is an object then we can do replace and parase else we can't then it will move to the catch block
-           answer =   answer.replace(/```json|```/g, "").trim()
+          answer =   answer.replace(/```json|```/g, "").trim()
+          answer = await JSON.parse(answer)
 
-            answer = await JSON.parse(answer)
-            
-        
          }catch(error){
           answer = answer
         }
        
         if (typeof answer === "object"){ // if answer type is object it will move to this
-          
-
+        
           EmailOptions = answer  // because we are cnverting the answer to the string we are storing it the fromEmail to send it to the 
-          answer = `From ${answer.from} to ${answer.to} with message ${answer.message}`  
+          answer = `From ${answer.from} to ${answer.to} with subject ${answer.subject} and message ${answer.message}`;  
         }
 
       // answer = await answer.json()

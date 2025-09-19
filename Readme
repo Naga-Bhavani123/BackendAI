@@ -2,3 +2,23 @@ This is the backend for the AI.
 Used externel Api Gemini ai. For that I have login tot the Gemini ai studio and created the API KEY in the project Project AI. 
 I have created aA API to the Gemenine to get the response. 
 //localhost:5000/folder/68a411ccdbe44f9bbe7dd830/query
+   // set credentials with refresh token
+              oAuth2Client.setCredentials({ refresh_token: refreshToken });
+
+              // init Gmail API client
+              const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+
+              // build raw mail
+              const raw = makeBody(to, from, "Subject ", message);
+
+              // send email
+              const result = await gmail.users.messages.send({
+                userId: "me", // "me" means the authenticated user
+                requestBody: { raw },
+              });
+
+              console.log("✅ Email sent:", result.data.id);
+              return result.data;
+
+            
+              
