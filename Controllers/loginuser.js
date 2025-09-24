@@ -6,8 +6,9 @@ const {sign} = pkg;
 const loginUser = async (req, res) => {
     try{
         const {email, password} = req.body; 
+            
+
         const Userdata = await User.findOne({email});
-        // console.log(Userdata);
         if (Userdata != undefined){
             const passwordCompare = await compare(password, Userdata.password); 
             if (passwordCompare){

@@ -4,7 +4,6 @@ const EachFromEmail = new mongoose.Schema({
     email:  {
         type: String, 
         required: true,
-        unique: true, 
         match: [/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "Only Gmail addresses are allowed"]
 
     }, 
@@ -25,7 +24,6 @@ const Schema = new mongoose.Schema({
         type: String, 
         required: true,
         unique: true, 
-        match: [/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "Only Gmail addresses are allowed"]
 
     }, 
     password: {

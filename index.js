@@ -1,7 +1,11 @@
 import express from "express"; 
 import dotenv from "dotenv";
+import cors from "cors"
+// Allow all origins (for development)
 dotenv.config();
 const app = express();
+app.use(cors());
+
 import mongoose from "mongoose";
 //Routes
 
