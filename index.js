@@ -4,7 +4,11 @@ import cors from "cors"
 // Allow all origins (for development)
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(express.json());
+
+app.use(cors({
+  origin: "http://localhost:5173",  // frontend
+}));
 
 import mongoose from "mongoose";
 //Routes
@@ -16,7 +20,6 @@ import authUserRoute from "./Routes/authRoute.js"
 
 const port = process.env.Port || 5000; 
 
-app.use(express.json());
 
 app.listen(port, () => {
 

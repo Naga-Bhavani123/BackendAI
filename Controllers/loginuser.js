@@ -9,12 +9,13 @@ const loginUser = async (req, res) => {
             
 
         const Userdata = await User.findOne({email});
-        if (Userdata != undefined){
+        if (Userdata != null){
             const passwordCompare = await compare(password, Userdata.password); 
             if (passwordCompare){
                 const jwtToken = sign({userId: Userdata._id}, "SECRET_KEY")
                 res.status(200);
-                res.send({msg: "Login successful", token: jwtToken})
+                res.send({msg: "Login successful", token: jwtToken}) 
+                
             }else{
                 res.status(400); 
                 res.send({msg: "Invalid password"});

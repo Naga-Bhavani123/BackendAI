@@ -13,8 +13,8 @@ const registerUser = async (req, res) => {
     const encryptedPast = await hash(password, 10); 
     const user = new User({name, email, password: encryptedPast}); 
     await user.save();
-    res.status(201)
-    res.send({msg: "User registered successfully"});
+    res.status(200)
+    res.send({message: "User registered successfully"});
     
     }catch (error) {
       console.log(error)
