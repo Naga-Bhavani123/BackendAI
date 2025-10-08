@@ -29,7 +29,7 @@ Validation rule: "from" and "to" must not be the same.`
 
 const GeminiApi = async (query, conversationHistory) => {
      const response = await fetch(
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + process.env.GEMINI_API_KEY,
+  "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + process.env.GEMINI_API_KEY,
   {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -50,11 +50,12 @@ return response;
 const queryController = async (req, res) => {
     try{
         const {query} = req.body; 
+        console.log(query)
         const {id} = req.params
         //getting previous history 
         const {userId} = req
         const previous = await Folder.findById(id); // geeting the previous history of the folder
-
+        
         let conversationHistory = previous.history.map((his) => { 
           const regex = /From\s+(\S+)\s+to\s+(\S+)\s+with subject\s+(.+?)\s+and message\s+(.+)/i;   // I am storing every =thing as string in the history so When I gave to the gemini it was not returning the JSON object. So when it come's email I have used regex to make the previous data to the json object
           const match = his.response.match(regex);
@@ -79,7 +80,7 @@ const queryController = async (req, res) => {
           // console.log(res)
           return `User: ${req}\nAssistant: ${res}`
 
-    });  // making prevoius history as string too give the previous con for the gemini ai
+    });  // making prevoius history as string too give the previous con for the gemini ai 
         conversationHistory.join("\n")
         let Geminidata = await GeminiApi(query, conversationHistory) // getting response from then
         Geminidata = await Geminidata.json()
@@ -111,10 +112,14 @@ const queryController = async (req, res) => {
         // finding user is register or not if their was no access token the we will ask for login
         if (EmailOptions){
           const fromEmailToken = await User.findOne({_id: userId}, {registerEmail:{$elemMatch: {email: EmailOptions.from}}}) 
-          if (!fromEmailToken){
-            res.send({message:"User not login to google mail I don't permission to send the email."})
+         console.log(fromEmailToken)
+          if (fromEmailToken.registerEmail.length === 0){
+            console.log("no")
+           return res.send({answer:"User not login to google mail I don't have permission to send the email."}) 
+
 
           }else{  
+
                 //  console.log(fromEmailToken)
                 // once user login we will get all the details of the user then we will be passing all the details to the sendingMail Component 
                 // console.log(fromEmailToken.registerEmail[0])

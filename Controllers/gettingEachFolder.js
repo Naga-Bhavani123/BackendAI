@@ -1,13 +1,15 @@
 import Folder from "../Model/Folder.js"
+import moment from "moment-timezone"
 
 const gettingEachFolderController = async (req, res) => {
     try{
-        const {userId} = req.userId; 
-        const id = req.params; 
+        const userId = req.userId; 
+        const {id} = req.params; 
         const folder = await Folder.findById(id); 
         const each = folder
         res.status(200); 
-        res.send({title: each.title, _id: title._id, createdAt: moment(each.createdAt).tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss"), updatedAt: moment(each.updatedAt).tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss"), history: each.history});
+        console.log(each.createdAt)
+        res.send({title: each.title, _id: each._id, createdAt: moment(each.createdAt).tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss"), updatedAt: moment(each.updatedAt).tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss"), history: each.history});
 
     }catch(error) {
         if (error.name === "ValidationError") {
