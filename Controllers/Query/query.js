@@ -50,7 +50,6 @@ return response;
 const queryController = async (req, res) => {
     try{
         const {query} = req.body; 
-        console.log(query)
         const {id} = req.params
         //getting previous history 
         const {userId} = req
@@ -98,7 +97,6 @@ const queryController = async (req, res) => {
         }
        
         if (typeof answer === "object"){ // if answer type is object it will move to this
-        
           EmailOptions = answer  // because we are cnverting the answer to the string we are storing it the fromEmail to send it to the 
           answer = `From ${answer.from} to ${answer.to} with subject ${answer.subject} and message ${answer.message}`;  
         }

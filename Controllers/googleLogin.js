@@ -53,7 +53,7 @@ export const googleLoginCallbackController = async (req, res) => {
            res.send("Invalid token")
       }
       const {userId} = payloads; 
-
+    
     try{
         // 1. Exchange code for tokens
 
@@ -64,9 +64,9 @@ export const googleLoginCallbackController = async (req, res) => {
         const oauth2 = google.oauth2({ version: "v2", auth: oAuth2Client }); 
         const { data } = await oauth2.userinfo.get();
         
-        const isAlreadyExist = await User.findOne({"registerEmail.email": data.email})
-        
-        if (isAlreadyExist){  
+          const fromEmailToken = await User.findOne({_id: userId}, {registerEmail:{$elemMatch: {email: data.email}}}) 
+        console.log(fromEmailToken)
+        if (fromEmailToken.registerEmail.length !== 0){  
 
             res.status(200).json({
         success: false,
